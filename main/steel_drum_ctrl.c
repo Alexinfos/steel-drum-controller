@@ -3,16 +3,40 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <inttypes.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "driver/gpio.h"
 #include "esp_log.h"
 
-#define NOTE_COUNT 1
-#define NOTE_DURATION_MS 200
+#define NOTE_COUNT 8
+#define NOTE_DURATION_MS 100
 
-uint32_t gpios[NOTE_COUNT] = {2};
+uint32_t gpios[NOTE_COUNT] = {2, 4, 16, 17, 5, 18, 19, 21};
+
+void drum_parse_command(const char* command, uint32_t len) {
+    char* cmd = malloc(sizeof(char) * len);
+    strcpy(cmd, command);
+
+    char* cmdName = strtok(cmd, " ");
+
+    if (cmdName == NULL) return;
+
+    if (strcmp(cmdName, "hello") == 0) {
+        ESP_LOGI("STEEL DRUM CTRL", "New client connected!\n");
+        return;
+    }
+
+    if (strcmp(cmdName, "play") == 0) {
+        char* noteStr = strtok(NULL, " ");
+        if (noteStr == NULL) return;
+        
+        int noteNumber = atoi(noteStr);
+        drum_play_note(noteNumber);
+
+        return;
+    }
+
+}
 
 void drum_setup() {
     gpio_config_t io_conf = {};
@@ -33,7 +57,11 @@ void drum_setup() {
 }
 
 void drum_play_note(int note) {
-    ESP_LOGI("STEEL DRUM CTRL", "playing note %d\n", note);
+    if (note < 0 || note >= NOTE_COUNT) {
+        ESP_LOGE("STEEL DRUM CTRL", "Unable to play note %d (out of acceptable range)\n", note);
+        return;
+    }
+    ESP_LOGI("STEEL DRUM CTRL", "Playing note %d (pin %ld)\n", note, gpios[note]);
     gpio_set_level(gpios[note], 1);
     vTaskDelay(pdMS_TO_TICKS(NOTE_DURATION_MS));
     gpio_set_level(gpios[note], 0);

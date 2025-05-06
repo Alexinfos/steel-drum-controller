@@ -50,7 +50,7 @@ static const uint8_t spp_adv_data[23] = {
     /* Complete List of 16-bit Service Class UUIDs */
     0x03, ESP_BLE_AD_TYPE_16SRV_CMPL, 0xF0, 0xAB,
     /* Complete Local Name in advertising */
-    0x0F, ESP_BLE_AD_TYPE_NAME_CMPL, 'S', 'T', 'E', 'E', 'L', '_', 'D', 'R', 'U', 'M', '_', 'E', 'S', 'P'
+    0x0F, ESP_BLE_AD_TYPE_NAME_CMPL, 'S', 't', 'e', 'e', 'l', ' ', 'D', 'r', 'u', 'm', ' ', 'E', 'S', 'P'
 };
 
 static uint16_t spp_mtu_size = 23;
@@ -554,8 +554,10 @@ static void gatts_profile_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_
 #else
                     uart_write_bytes(UART_NUM_0, (char *)(p_data->write.value), p_data->write.len);
 #endif
-                    ESP_LOGI(GATTS_TABLE_TAG, "test :)\n");
-                    drum_play_note(0);
+                    
+                    // Parse command
+                    drum_parse_command((const char *)p_data->write.value, p_data->write.len);
+
                 }else{
                     //TODO:
                 }
