@@ -10,7 +10,7 @@ Code pour ESP32 permettant de piloter des solénoides jouant de la musique à pa
 
 ## Liens utiles
 - [Présentation du projet](https://www.eirlab.net/2025/02/27/metal-drum-player/)
-- [Code du contrôleur](https://github.com/Alexinfos/steel-drum-controller)
+- [Code de l'application](https://github.com/Alexinfos/steel-drum-remote)
 
 ## Informations
 
