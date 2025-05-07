@@ -44,9 +44,10 @@ void drum_setup() {
     io_conf.mode = GPIO_MODE_OUTPUT;
     io_conf.pull_down_en = GPIO_PULLDOWN_DISABLE;
     io_conf.pull_up_en = GPIO_PULLUP_DISABLE;
+    io_conf.pin_bit_mask = 0;
 
     for (int i = 0; i < NOTE_COUNT; i++) {
-        io_conf.pin_bit_mask = (1ULL << gpios[i]);
+        io_conf.pin_bit_mask |= (1ULL << gpios[i]);
     }
 
     gpio_config(&io_conf);
