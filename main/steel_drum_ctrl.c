@@ -36,6 +36,29 @@ void drum_parse_command(const char* command, uint32_t len) {
         return;
     }
 
+    if (strcmp(cmdName, "play_multiple") == 0) {
+        char* noteCountStr = strtok(NULL, " ");
+        if (noteCountStr == NULL) return;
+        
+        int noteCount = atoi(noteCountStr);
+        if (noteCount >= NOTE_COUNT) {
+            noteCount = NOTE_COUNT - 1;
+        }
+        int notes[NOTE_COUNT] = {};
+        for (int i = 0; i < noteCount && i < NOTE_COUNT; i++) {
+            char* noteStr = strtok(NULL, " ");
+            if (noteStr == NULL) {
+                notes[i] = -1;
+                continue;
+            }
+            
+            notes[i] = atoi(noteStr);
+        }
+        drum_play_multiple(notes, noteCount);
+
+        return;
+    }
+
 }
 
 void drum_setup() {
@@ -66,4 +89,16 @@ void drum_play_note(int note) {
     gpio_set_level(gpios[note], 1);
     vTaskDelay(pdMS_TO_TICKS(NOTE_DURATION_MS));
     gpio_set_level(gpios[note], 0);
+}
+
+void drum_play_multiple(int* notes, int noteCount) {
+    for (int i = 0; i < noteCount; i++) {
+        if (notes[i] < 0 || notes[i] >= NOTE_COUNT) continue;
+        ESP_LOGI("STEEL DRUM CTRL", "Playing note %d (pin %ld)\n", notes[i], gpios[notes[i]]);
+        gpio_set_level(gpios[notes[i]], 1);
+    }
+    vTaskDelay(pdMS_TO_TICKS(NOTE_DURATION_MS));
+    for (int i = 0; i < noteCount; i++) {
+        gpio_set_level(gpios[notes[i]], 0);
+    }
 }
