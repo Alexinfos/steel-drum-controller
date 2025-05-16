@@ -33,6 +33,7 @@ void drum_parse_command(const char* command, uint32_t len) {
         int noteNumber = atoi(noteStr);
         drum_play_note(noteNumber);
 
+        free(cmd);
         return;
     }
 
@@ -56,6 +57,7 @@ void drum_parse_command(const char* command, uint32_t len) {
         }
         drum_play_multiple(notes, noteCount);
 
+        free(cmd);
         return;
     }
 
