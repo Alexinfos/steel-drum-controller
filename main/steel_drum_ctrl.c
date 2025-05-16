@@ -60,7 +60,7 @@ void drum_parse_command(const char* command, uint32_t len) {
         free(cmd);
         return;
     }
-
+    free(cmd);
 }
 
 void drum_setup() {
