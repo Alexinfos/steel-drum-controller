@@ -19,10 +19,14 @@ void drum_parse_command(const char* command, uint32_t len) {
 
     char* cmdName = strtok(cmd, " ");
 
-    if (cmdName == NULL) return;
+    if (cmdName == NULL) {
+        free(cmd);
+        return;
+    }
 
     if (strcmp(cmdName, "hello") == 0) {
         ESP_LOGI("STEEL DRUM CTRL", "New client connected!\n");
+        free(cmd);
         return;
     }
 
@@ -39,7 +43,10 @@ void drum_parse_command(const char* command, uint32_t len) {
 
     if (strcmp(cmdName, "play_multiple") == 0) {
         char* noteCountStr = strtok(NULL, " ");
-        if (noteCountStr == NULL) return;
+        if (noteCountStr == NULL) {
+            free(cmd);
+            return;
+        }
         
         int noteCount = atoi(noteCountStr);
         if (noteCount >= NOTE_COUNT) {
